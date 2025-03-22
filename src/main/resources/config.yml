@@ -1,0 +1,8 @@
+allow:
+    upload:
+        suffix: jpg,jpeg,gif,txt,pdf
+base:
+    upload:
+        path: C://upload
+jwt:
+    secret: +ipyyYc4MQiwZJtrtHTIHs7fyvR0wf5uwGDVV4pHwSU=

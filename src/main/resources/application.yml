@@ -1,30 +1,42 @@
-server:
-    port: 8000
-# Spring Boot 应用主配置
+# Spring 配置
 spring:
-    # 数据源配置（MySQL）
+    # 数据源配置
     datasource:
-        url: jdbc:mysql://localhost:3306/paypmp?useSSL=false&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/paypmp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
         username: root
         password: root
         driver-class-name: com.mysql.cj.jdbc.Driver
-        type: com.zaxxer.hikari.HikariDataSource
-        hikari:
-            maximum-pool-size: 20
-            minimum-idle: 5
+    # JPA 配置
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+    # 安全配置
+    security:
+        user:
+            name: admin
+            password: admin
+    # Redis 配置
+    data:
+        redis:
+            client-type: lettuce # 客户端类型，lettuce 是默认且推荐的
+            database: 0         # 使用的 Redis 数据库编号
+            host: localhost     # Redis 服务器地址
+            port: 6379          # Redis 服务器端口
+            password:           # Redis 服务器密码，如果没有则留空
 
-    # MyBatis-Plus 配置
-    mybatis-plus:
-        mapper-locations: classpath:mapper/**/*.xml
-        type-aliases-package: com.yourpackage.entity
-        configuration:
-            map-underscore-to-camel-case: true # 下划线转驼峰
-            log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl # SQL日志
-        global-config:
-            db-config:
-                id-type: auto # 主键生成策略
-            logic-delete-value: 1 # 逻辑删除标记值
-            logic-not-delete-value: 0
-        auto-fill:
-            enable: true # 启用自动填充
-            fill-columns: create_time,update_time # 需要自动填充的字段
+# MyBatis-Plus 配置
+mybatis-plus:
+    mapper-locations: classpath:mapper/*.xml
+    global-config:
+        db-config:
+            id-type: auto
+
+# JWT 配置
+jwt:
+    secret: your_jwt_secret_key
+    expiration: 86400000 # 过期时间，单位为毫秒，这里设置为 24 小时
+
+# 服务器配置
+server:
+    port: 8000
