@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.pkj.mapper.PartyFeeStandardMapper">
+
+    <resultMap id="BaseResultMap" type="com.it.pkj.domain.PartyFeeStandard">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="organizationType" column="organization_type" jdbcType="VARCHAR"/>
+            <result property="incomeType" column="income_type" jdbcType="VARCHAR"/>
+            <result property="feeRate" column="fee_rate" jdbcType="DECIMAL"/>
+            <result property="fixedAmount" column="fixed_amount" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,organization_type,income_type,
+        fee_rate,fixed_amount
+    </sql>
+</mapper>
