@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 public class PartyMemberServiceImpl extends ServiceImpl<PartyMemberMapper, PartyMember>
     implements PartyMemberService{
 
+    @Override
+    public boolean updatePartyMember(PartyMember partyMember) {
+        int result = baseMapper.updateById(partyMember);
+        return result > 0;
+    }
 }
 
 

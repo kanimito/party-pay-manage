@@ -46,12 +46,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Spring Boot 安全启动器，提供 Spring Security 的安全功能 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
         <!-- JJWT API，用于 JWT 相关操作的接口定义 -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -94,6 +88,19 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
+        <!-- redis 连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- 引入hutool包，以使用md5加密。-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.19</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

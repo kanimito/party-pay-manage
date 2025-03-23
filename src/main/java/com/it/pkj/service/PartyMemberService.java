@@ -9,5 +9,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2025-03-22 20:59:31
 */
 public interface PartyMemberService extends IService<PartyMember> {
-
+    // 根据党员id修改党员
+    boolean updatePartyMember(PartyMember partyMember);
 }

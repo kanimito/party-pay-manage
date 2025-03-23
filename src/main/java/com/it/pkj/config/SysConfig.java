@@ -1,5 +1,7 @@
 package com.it.pkj.config;
 
+import com.it.pkj.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -9,7 +11,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class SysConfig {
-
+    @Value("${jwt.secret}")
+    private String secret;
     /**
      * 配置 RedisTemplate
      * @param redisConnectionFactory Redis 连接工厂
@@ -32,5 +35,11 @@ public class SysConfig {
 
         template.afterPropertiesSet();
         return template;
+    }
+
+    // jwt配置
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil(secret);
     }
 }

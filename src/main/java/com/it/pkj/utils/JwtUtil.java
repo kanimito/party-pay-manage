@@ -1,5 +1,8 @@
 package com.it.pkj.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +15,7 @@ import java.util.*;
 public class JwtUtil {
     /** 数字签名秘钥 */
     private String sighSecret = "";
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     /** 令牌过期时间,默认30分钟 */
     @Getter
     private long expire = 30 * 60l;
@@ -27,37 +30,27 @@ public class JwtUtil {
     }
 
     /** 生成令牌 */
-    public String generateToken(String tid) {
-        String token =
-                Jwts.builder()
-                        // 主题
-                        .setSubject("login")
-                        // 设置令牌id,唯一的,建议用UUID
-                        .setId(tid)
-                        // 令牌签发时间
-                        .setIssuedAt(new Date())
-                        // 设置过期时间(一天)
-                        //                .setExpiration(new Date(System.currentTimeMillis() +24 * 60 * 60 *
-                        // 1000))
-                        .signWith(
-                                // 加密秘钥
-                                Keys.hmacShaKeyFor(this.sighSecret.getBytes()),
-                                // 加密算法
-                                SignatureAlgorithm.HS256)
-                        // 生成令牌
-                        .compact();
-        return token;
+    public String generateToken(String tid, Object userObject) {
+        try {
+            String userJson = objectMapper.writeValueAsString(userObject);
+            Date now = new Date();
+            Date expiration = new Date(now.getTime() + expire * 1000);
+
+            return Jwts.builder()
+                    .setSubject("login")
+                    .setId(tid)
+                    .setIssuedAt(now)
+                    .setExpiration(expiration)
+                    .claim("userObject", userJson)
+                    .signWith(
+                            Keys.hmacShaKeyFor(this.sighSecret.getBytes()),
+                            SignatureAlgorithm.HS256
+                    )
+                    .compact();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize user object", e);
+        }
     }
-
-    //    public static void main(String[] args) {
-    //        String secret = "+ipyyYc4MQiwZJtrtHTIHs7fyvR0wf5uwGDVV4pHwSU=";
-    //        System.out.println(secret.length());
-    //        JwtUtil jwtUtil = new JwtUtil(secret);
-    //        UUID uuid = UUID.randomUUID();
-    //        String tid = uuid. toString();
-    //        System.out.println(jwtUtil.generateToken(tid));
-    //    }
-
     /** 返回令牌的ID值 */
     public String parseToken(String token) {
         if (!StringUtils.hasText(token)) {
@@ -73,5 +66,24 @@ public class JwtUtil {
                 .getBody()
                 // 拿到令牌的Id(UUID)
                 .getId();
+    }
+
+    public <T> T getUserObjectFromToken(String token, Class<T> clazz) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(this.sighSecret.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            String userJson = claims.get("userObject", String.class);
+            if (userJson == null) {
+                throw new RuntimeException("User object not found in JWT token");
+            }
+            return objectMapper.readValue(userJson, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to deserialize user object", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse JWT token", e);
+        }
     }
 }

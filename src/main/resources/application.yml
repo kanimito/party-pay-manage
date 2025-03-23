@@ -11,11 +11,6 @@ spring:
         hibernate:
             ddl-auto: update
         show-sql: true
-    # 安全配置
-    security:
-        user:
-            name: admin
-            password: admin
     # Redis 配置
     data:
         redis:
@@ -24,7 +19,12 @@ spring:
             host: localhost     # Redis 服务器地址
             port: 6379          # Redis 服务器端口
             password:           # Redis 服务器密码，如果没有则留空
-
+            lettuce:
+                pool:
+                    min-idle: 0
+                    max-idle: 8
+                    max-wait: -1ms
+                    max-active: 16
 # MyBatis-Plus 配置
 mybatis-plus:
     mapper-locations: classpath:mapper/*.xml
@@ -34,9 +34,28 @@ mybatis-plus:
 
 # JWT 配置
 jwt:
-    secret: your_jwt_secret_key
-    expiration: 86400000 # 过期时间，单位为毫秒，这里设置为 24 小时
+    secret: +ipyyYc4MQiwZJtrtHTIHs7fyvR0wf5uwGDVV4pHwSU=
+#    expiration: 86400000 # 过期时间，单位为毫秒，这里设置为 24 小时
 
 # 服务器配置
 server:
     port: 8000
+
+alipay:
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArWgb5avDjmHtFR6wMkvrDQHvz/bAEWxmPdDKTMPR1YPpLbJtCwPSpUjqa7E3Mfl9OufV1zXTo0h5UIld5SumdKwrwwh8pRf1aTcDJOVhouxjPOhN/f0gQ0EE3QN/VGgbQRPEoiZJuJXmDOr8d2c7mFkrTKg6QMBnN5QcWrc7hywi6yxRSiyh/RTzCsRh80vsJvKB2iochqm+aCY/BKejbbLU0fjvYgduXXNoCrZ/WmylQWHbMQutMYie5Yuo+8z2sg8U66U7/k4otgf8ZmpKr9FcRdRdz4ON0e//nE9iT2nTsHbHobv8czIUsEDJFLi4JOxz0J6j/G9xMxfRj7M8xwIDAQAB
+    appId: 9021000139634790
+    appPrivateKey: MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDXMxvm9aPnoCbo1ILAssUTS5wp4kO2IHcxvea9VMUzcB/M/EcnlSM1BgTt+CcJRkI58Tj2vmunDlru975dFu+7z0nG0sr3cTUlB/RthIAdmOl+wzTfGs0eXcyQHuK3xm96vQ6flfRV+bMT+letPtrFytTPTyX/ZXrTjFfTnUvhKvMXDiQvwzoqdZnX8wKjl2HsZTwr6ioMVDvJY5jcL56MyK1YtCGacdvOr+BLf4a5p4F40vpKz3qQdPz1UO4OkJhl7D7BAp1ae471TmvzwaSKabZRJY5fdYVNfBHYqtPtffOPQKJ0qcQnZMzhbmyLm/H7BtSYVSEqA+2kYQQ4LcoXAgMBAAECggEAGhNKTTj0bEt+i3W8hibjNExUFssg0z+p0bAl9kkAQBRU9hyXbpdmlbUuAbuw1zHZMnYlJdi66JoXsJ76RQNTdxlN4jaGe2cPPnZxSpfkgjGWEVML5AC2W/iXodrsM8JqnZ+s1u9vlL9V0JTj7M0R6yeBk8EOZJziPiHiPnTvzc+Sebfr/h/n6Pyo0eE5vxGtQPDSMokxhNBdCGfD9ZsbQyD3u80fs/omu4T7fJyt3hawV6yg6XDCDhmudV19D0rbqXGJri+bdiZzy7cED1CUWZqXPuG19BZ485nqC2UOimud9IjheDunyECJtbArHdDZb2qFmg7ry1HMS4lvtd+mOQKBgQD5qSAPlJ9JH/xv7Yw2mBtddgop/zFslTgseoPG09K7DqvIKBsjXDzaHsubTEPS2cMEFOKW3SjKWQD48R1EFlFU5gHPrXGVKtipbKMH1qfvCHY49Q+AjxpDlVzCZvgEM0loaRGSNuZsqbvzW09+m52gnFZjbSryd21ggI4P9RiecwKBgQDcqfnjieV+9HgCaDEZ23gCcZUHr5glXghNkRCd3Cmqx2HCcep5Us/KFmq7pR+TayyG/EuqtCptlfNWOJ9ChpyX664c8YviowzdJYti4MNSmKX+tu78s79zTGuYpWeSEsodV6yQm7tpKP4vLB3vtgfy55q2lww0wCQepn4ILMt4zQKBgQD4LcONOXTOQFm0+jMz4ijx03FvJht/kSZyMKfmcpM9F+xz4Ep58CsduRc1na6eX5KY8Bn/VoJCBBAPZ8Br+rOG7c5HIGeUnS8b3L6EAEKYP5UmMZXjel3laQj4x1ss8b67aBbrfl+5DVGlLNPtS8x56G+IDvFuboHwOFsASejbOQKBgQDPHlRJOMPKmBiU2ctMo+1PDeF+Z1j9qfdNJx5bra0GeULPSjF1Uz9qRgREwMaUjoIq6WD0h0tTtO3EPj1uKf+NsU+qJybPwY9ve7ALTUDIpDMalAZZ9zV6OX68tnQybaR8SjDVQvdzy2BaUqR+vXNUkgNr4vc4BCljA49EiRcq+QKBgQDLnk8AmuctogOgMSvkhwL20F54j1Qi/3oc3w+I9Efy+gkyHCqr6Hs7XQyTT8Mxx5dJEe/EFWaEypms+CAkKWMah5ig5UNGOfZbjCOFLNcaTwkRO/Qn5juuVVOrogZNdLB3umJ/vJZokfiWoQLztDG6QZJD5Kl23SDSyQQecLL5/g==
+    charset: utf-8
+    gatewayUrl: https://openapi.alipay.com/gateway.do
+    log_path: E:\demo\log
+    notifyUrl: http://ffiaf4.natappfree.cc/alipay/notify
+    returnUrl: http://ffiaf4.natappfree.cc/alipay/return
+    sign_type: RSA2
+
+allow:
+    upload:
+        suffix: jpg,jpeg,gif,txt,pdf
+
+base:
+    upload:
+        path: C://upload
