@@ -10,4 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface PartyFeeStandardService extends IService<PartyFeeStandard> {
 
+    boolean updatePartyFeeStandard(PartyFeeStandard partyFeeStandard);
 }

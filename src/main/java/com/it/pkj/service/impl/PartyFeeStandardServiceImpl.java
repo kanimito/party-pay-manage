@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 public class PartyFeeStandardServiceImpl extends ServiceImpl<PartyFeeStandardMapper, PartyFeeStandard>
     implements PartyFeeStandardService{
 
+    @Override
+    public boolean updatePartyFeeStandard(PartyFeeStandard partyFeeStandard) {
+        int result = baseMapper.updateById(partyFeeStandard);
+        return result > 0;
+    }
 }
 
 
