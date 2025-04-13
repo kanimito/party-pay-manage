@@ -10,14 +10,15 @@
             <result property="gender" column="gender" jdbcType="CHAR"/>
             <result property="age" column="age" jdbcType="INTEGER"/>
             <result property="joinPartyTime" column="join_party_time" jdbcType="DATE"/>
-            <result property="partyOrganization" column="party_organization" jdbcType="VARCHAR"/>
+            <result property="provinceId" column="province_id" jdbcType="INTEGER"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="organizationType" column="organization_type" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name,gender,
-        age,join_party_time,party_organization,
-        phone,email
+        age,join_party_time,province_id,
+        phone,email,organization_type
     </sql>
 </mapper>

@@ -15,4 +15,6 @@ public interface LoginService {
     public String login(SysUserVo userVo);
 
     void register(SysUserVo userVo);
+
+    void logout(String token);
 }

@@ -1,8 +1,10 @@
 package com.it.pkj.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.it.pkj.common.Result;
 import com.it.pkj.domain.PartyMember;
 import com.it.pkj.domain.SystemUser;
+import com.it.pkj.domain.result.PartyMemberWithProvince;
 import com.it.pkj.service.PartyMemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @RestController
-@RequestMapping("/api/partyMember")
+@RequestMapping("/partyMember")
 public class PartyMemberController {
 
     @Autowired
@@ -27,8 +29,8 @@ public class PartyMemberController {
     // 管理党员信息
     // 1、查询党员信息
     @GetMapping("/list")
-    public Result<List<PartyMember>> list() {
-        List<PartyMember> list = partyMemberService.list();
+    public Result<IPage<PartyMemberWithProvince>> list(int currentPage, int pageSize) {
+        IPage<PartyMemberWithProvince> list = partyMemberService.getAllPartyMembers(currentPage, pageSize);
         return Result.ok(list);
     }
     // 2、根据党员id修改党员信息
@@ -51,9 +53,9 @@ public class PartyMemberController {
     }
     // 5、党员查看自己的个人信息
     @GetMapping("/info")
-    public Result<PartyMember> info(Integer id, HttpServletRequest request) {
+    public Result<PartyMemberWithProvince> info(HttpServletRequest request) {
         SystemUser user = (SystemUser) request.getAttribute("user");
-        PartyMember partyMember = partyMemberService.getById(user.getMemberId());
+        PartyMemberWithProvince partyMember = partyMemberService.getPartyMemberById(user.getMemberId());
         return Result.ok(partyMember);
     }
 }

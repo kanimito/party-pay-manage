@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.it.pkj.domain.PartyFeeStandard">
             <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="provinceId" column="province_id" jdbcType="INTEGER"/>
             <result property="organizationType" column="organization_type" jdbcType="VARCHAR"/>
             <result property="incomeType" column="income_type" jdbcType="VARCHAR"/>
             <result property="feeRate" column="fee_rate" jdbcType="DECIMAL"/>
@@ -13,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,organization_type,income_type,
-        fee_rate,fixed_amount
+        id,province_id,organization_type,
+        income_type,fee_rate,fixed_amount
     </sql>
 </mapper>

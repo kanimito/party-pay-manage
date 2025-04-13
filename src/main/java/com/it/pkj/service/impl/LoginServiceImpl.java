@@ -10,6 +10,9 @@ import com.it.pkj.domain.SystemUser;
 import com.it.pkj.mapper.SystemUserMapper;
 import com.it.pkj.service.LoginService;
 import com.it.pkj.utils.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -27,13 +30,17 @@ import java.util.concurrent.TimeUnit;
  * @Version: 1.0
  */
 @Service
-public class LoginServiceImpl extends ServiceImpl<SystemUserMapper,SystemUser> implements LoginService {
+public class LoginServiceImpl extends ServiceImpl<SystemUserMapper, SystemUser> implements LoginService {
+    private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
     // 注入redis
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
     // 注入jwt
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private SystemUserMapper systemUserDao;
     /**
      * 登录
      * @param userVo
@@ -51,9 +58,11 @@ public class LoginServiceImpl extends ServiceImpl<SystemUserMapper,SystemUser> i
         // 2. 校验密码是否正确
         SystemUser user = userList.get(0);
 
+
         if(!user.getPassword().equals(MD5.create().digestHex16(userVo.getPassword()))){
             throw new BusinessException(CodeEnum.ValidateError, "密码错误");
         }
+        user.setLoggedIn(true);
         // 2. 生成jwt的token
         String tid = UUID.randomUUID().toString().replaceAll("-","");
         String token = jwtUtil.generateToken(tid, user);
@@ -61,6 +70,7 @@ public class LoginServiceImpl extends ServiceImpl<SystemUserMapper,SystemUser> i
         redisTemplate.opsForValue().set(tid,token);
         // 3.1 保存token到redis中，设置过期时间
         redisTemplate.expire(tid,30, TimeUnit.MINUTES);
+
         // 4. 返回token
         return token;
     }
@@ -88,4 +98,36 @@ public class LoginServiceImpl extends ServiceImpl<SystemUserMapper,SystemUser> i
         user.setUserType(userVo.getUserType());
         baseMapper.insert(user);
     }
+
+    @Override
+    public void logout(String token) {
+        try {
+            // 从 Redis 中删除用户的 token 信息
+            String redisKey = token;
+            Boolean result = redisTemplate.delete(redisKey);
+            if (result != null && result) {
+                logger.info("Token {} 已从 Redis 中移除", token);
+                // 根据 token 从 Redis 中获取用户 ID
+                String userIdKey = token;
+                Object userIdObj = redisTemplate.opsForValue().get(userIdKey);
+                if (userIdObj != null) {
+                    String userId = userIdObj.toString();
+                    // 从 Redis 中删除 token 与用户 ID 的映射关系
+                    redisTemplate.delete(userIdKey);
+                    // 更新数据库中用户的登录状态
+                    SystemUser user = systemUserDao.selectById(userId);
+                    if (user != null) {
+                        user.setLoggedIn(false);
+                        systemUserDao.updateById(user);
+                        logger.info("用户 {} 登出，数据库登录状态已更新", userId);
+                    }
+                }
+            } else {
+                logger.warn("Token {} 不存在于 Redis 中，无需移除", token);
+            }
+        } catch (Exception e) {
+            logger.error("登出操作出现异常: ", e);
+        }
+    }
+
 }

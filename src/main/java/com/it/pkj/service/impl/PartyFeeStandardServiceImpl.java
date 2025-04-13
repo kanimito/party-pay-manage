@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author Administrator
 * @description 针对表【party_fee_standard】的数据库操作Service实现
-* @createDate 2025-03-22 20:59:31
+* @createDate 2025-03-23 17:10:41
 */
 @Service
 public class PartyFeeStandardServiceImpl extends ServiceImpl<PartyFeeStandardMapper, PartyFeeStandard>
